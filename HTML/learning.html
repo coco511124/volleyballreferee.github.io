@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+
+    <link rel="stylesheet" href="./menu.css">
+    <!--<script src="menu.js"></script>-->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+        
+
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h4><a href="./volleyballreferee.html"><img id="chg" class="logo" src="./image/volleyball referee-logo-white.png" alt="首頁"></a></h4>
+            </div>
+
+            <ul class="nav-links">
+                <li>
+                    <a href="./volleyballreferee.html" class="shape-ex1">首頁</a>
+                </li>
+                <li>
+                    <a href="./learning.html" class="shape-ex1">教學課程</a>
+                </li>
+                <li>
+                    <a href="./test.html" class="shape-ex1">DIVE測驗</a>
+                </li>
+                <li>
+                    <a href="./game.html" class="shape-ex1">小遊戲</a>
+                </li>
+                <li>
+                    <a href="./database.html" class="shape-ex1">成績紀錄</a>
+                </li>
+                <li>
+                    <a href="#" id="Logout" class="shape-ex1">登出</a>
+                </li>
+            </ul>
+
+            <div class="burger">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="dive_position">
+        <iframe src="https://dive.nutn.edu.tw/Experiment/kaleTestExperiment5.jsp?eid=22663&record=false" name="dive"
+            width="60%" height="550px"></iframe>
+            <a id="but" href="./test.html" class="btn"><button class="hov"><span>前往測驗</span></button></a>
+        <script src="https://dive.nutn.edu.tw/Experiment/js/dive.linker.js"></script>
+        <script src="./IO.js"></script>
+        <!--<script src="./game.js"></script>-->
+    </div>
+</body>
+
+
+<script type="module">
+
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
+    import { getDatabase, set, ref, update } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-database.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-auth.js";
+
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAxAXHV8Sf14S252fL_BHtxdIWnS9HLZK4",
+        authDomain: "lms-system-eb7b8.firebaseapp.com",
+        databaseURL: "https://lms-system-eb7b8-default-rtdb.firebaseio.com",
+        projectId: "lms-system-eb7b8",
+        storageBucket: "lms-system-eb7b8.appspot.com",
+        messagingSenderId: "732907173752",
+        appId: "1:732907173752:web:bc6e6a46a2a927c9d5ba8d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const auth = getAuth();
+
+    //登出和登入時使用
+    const user = auth.currentUser;
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // User is signed in, see docs for a list of available properties
+            // https://firebase.google.com/docs/reference/js/firebase.User
+            const uid = user.uid;
+
+
+            /*function Start() {
+                diveLinker.enableBlock(false);
+                var makeSureDiveIsReady = setInterval(() => {
+                    diveLinker.getOutputList();
+                    if (diveLinker.getLoadingStatus()) {
+                        clearInterval(makeSureDiveIsReady);
+                        window.requestAnimationFrame(StartGame);
+                        diveLinker.start()
+                    }
+                }, 50)
+            }
+            Start();
+
+            function StartGame() {
+
+                //console.log(diveLinker.getOutputList()["db9d048734fe47608fa68b185c63187b"].value)
+                //if(判斷專案執行底下哪個(不同遊戲))
+                var score = diveLinker.getOutputList()["db9d048734fe47608fa68b185c63187b"].value;
+                if (diveLinker.checkComplete()) {
+                    update(ref(database, 'users/' + user.uid), {
+                        Score: score
+                    })
+                    return;
+                }
+                window.requestAnimationFrame(StartGame);
+            }*/
+        } else {
+            // User is signed out            
+        }
+    });
+
+
+    //登出
+    Logout.addEventListener('click', logout);
+
+    function logout() {
+        const auth = getAuth();
+        var logout = document.getElementById('logout');//這句一定要寫
+        signOut(auth).then(() => {
+            // 成功登出
+            window.location.href = './login-interface.html';
+            alert('登出成功');
+        })
+            .catch((error) => {
+                // 錯誤
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(error.message);
+                alert('錯誤');
+            });
+    }
+
+
+
+
+</script>
+
+<script>
+    const navSlide = () => {
+        const burger = document.querySelector('.burger');
+        const nav = document.querySelector('.nav-links');
+        const navLinks = document.querySelectorAll('.nav-links li');
+
+        burger.addEventListener('click', () => {
+            //Toggle Nav
+            nav.classList.toggle('nav-active');
+
+            //可以自由新增選項在側邊選單
+            //Animation Links
+            navLinks.forEach((link, index) => {
+                if (link.style.animation) {
+                    link.style.animation = '';
+                } else {
+                    link.style.animation = `navLinkFade 0.5s ease forwards ${index / 7 + 0.3}s`;
+                }
+            });
+            //Burger Animation
+            burger.classlist.toggle('toggle');
+        });
+    }
+    navSlide();
+</script>
+
+</html>

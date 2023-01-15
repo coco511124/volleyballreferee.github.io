@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!--<link rel="stylesheet" href=".css">-->
+
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            /*background*/
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            border: none;
+            outline: none;
+        }
+
+        #content_container {
+            width: 30%;
+            height: 70%;
+        }
+
+        #form_container {
+            width: 100%;
+            height: 70%;
+
+            background-color: rgb(255, 255, 255);
+            box-shadow: 0 0 50px -20px rgb(0, 0, 0);
+            border-radius: 2%;
+
+            overflow: hidden;
+        }
+
+        #form_header_container {
+            width: 100%;
+            height: 5%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            float: left;
+
+            padding: 20px;
+            padding-bottom: 30px;
+            padding-top: 30px;
+
+            border-bottom: 1px solid transparent;
+            background: rgb(79, 143, 227);
+            color: white;
+        }
+
+        #form_header {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #form_content_container {
+            width: 100%;
+            height: 90%;
+
+            float: left;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding-top: 30px;
+        }
+
+        #form_content_inner_container {
+            width: 75%;
+            height: 100%;
+
+            float: left;
+        }
+
+        input {
+            width: 100%;
+            height: 40px;
+
+            padding-left: 10px;
+            margin-bottom: 20px;
+
+            background: none;
+            font-weight: 500;
+            color: rgb(0, 0, 0);
+            font-size: 12px;
+
+            /*border-radius: 20px ;*/
+            border: 2px solid #000;
+            /*border-bottom: 2px solid transparent;
+            border-top-left-radius: 2%;
+            border-bottom-right-radius: 2%;*/
+        }
+
+        #button_container {
+            width: 100%;
+            height: 10%;
+
+            color: rgb(0, 0, 0);
+            float: left;
+            margin-top: 5px;
+        }
+
+        button {
+            width: 50%;
+            height: 100%;
+            float: left;
+
+            background: transparent;
+            color: inherit;
+
+            letter-spacing: 1px;
+            font-weight: 900;
+            font-size: 12px;
+
+            cursor: pointer;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid rgb(79, 143, 227);
+            transition: all .3s linear;
+        }
+
+        button:hover {
+            background-color: rgb(79, 143, 227);
+            color: #fff;
+            border: 2px solid rgb(79, 143, 227);
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <div id="content_container">
+        <div id="form_container">
+
+            <div id="form_header_container">
+                <h2 id="form_header">LOGIN & REGISTER</h2>
+            </div>
+
+            <div id="form_content_container">
+                <div id="form_content_inner_container">
+                    <input type="text" id="full_name" placeholder="Full name">
+                    <input type="email" id="email" placeholder="Email">
+                    <input type="password" id="password" placeholder="New Password">
+
+                    <div id="button_container">
+                        <button id="Login">Login</button>
+                        <button id="reg">Register</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</body>
+
+
+<script type="module">
+
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
+    import { getDatabase, set, ref, update } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-database.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-auth.js";
+
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+    const firebaseConfig = {
+        apiKey: "AIzaSyAxAXHV8Sf14S252fL_BHtxdIWnS9HLZK4",
+        authDomain: "lms-system-eb7b8.firebaseapp.com",
+        databaseURL: "https://lms-system-eb7b8-default-rtdb.firebaseio.com",
+        projectId: "lms-system-eb7b8",
+        storageBucket: "lms-system-eb7b8.appspot.com",
+        messagingSenderId: "732907173752",
+        appId: "1:732907173752:web:bc6e6a46a2a927c9d5ba8d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const auth = getAuth();
+
+    //註冊
+    reg.addEventListener('click', register);
+
+    function register() {
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+        var full_name = document.getElementById('full_name').value;
+
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // 註冊
+                const user = userCredential.user;
+                //console.log(userCredential.user);
+                alert('帳號建立成功');
+
+                //將資料寫到realtime database
+                set(ref(database, 'users/' + user.uid), {
+                    full_name: full_name,
+                    email: email
+                })
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+
+                if (password.length < 6) {
+                    alert('密碼長度須至少為6位數');
+                } else {
+                    console.log(error.message);
+                    alert('錯誤');
+                }
+            });
+    }
+
+    //登入
+    Login.addEventListener('click', login);
+
+    function login() {
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // 登入
+                const user = userCredential.user;
+                const dt = new Date();
+
+                update(ref(database, 'users/' + user.uid), {
+                    last_login: dt,
+                })
+                //alert('User loged in');
+                window.location.href = './volleyballreferee.html'
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                alert('錯誤');
+            });
+    }
+
+
+    //登出和登入時使用
+    const user = auth.currentUser;
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // User is signed in, see docs for a list of available properties
+            // https://firebase.google.com/docs/reference/js/firebase.User
+            const uid = user.uid;
+        } else {
+            // User is signed out            
+        }
+    });
+
+
+    //登出
+    function logout() {
+        const auth = getAuth();
+        signOut(auth).then(() => {
+            // 成功登出
+            alert('登出成功');
+        })
+            .catch((error) => {
+                // 錯誤
+                const errorCode = error.code;
+                const errorMessage = error.message;
+
+                alert('錯誤');
+            });
+    }
+
+</script>
+
+</html>
